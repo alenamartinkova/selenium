@@ -43,35 +43,41 @@ describe('Buy notebook tests', function() {
         await driver.quit();
     });
 })
-*/
+
 describe('Login tests', function() {
     const tests = [
         {email: 'test2022@test.test', password: "test123"},
-        {email: 'test2022@test.test', password: "test123"},
+        {email: 'test2023@test.test', password: "wrongpassword"},
+        {email: 'notexistingemail@test.test', password: "test1234"},
+        {email: 'notexistingemail@test.test', password: "wrongpassword"}
     ];
 
     tests.forEach(({email, password}) => {
         it('Login email: '+ email +', password: ' + password, async function() {
-            let driver = await new Builder().forBrowser("chrome").build();
-            //To wait for browser to build and launch properly
-            
             try {
-                await driver.get("http://vsrvfeia0h-114.vsb.cz/opencart/");
                 await driver.findElement(By.id('top-links')).findElement(By.css('.dropdown .dropdown-toggle')).click();
                 await driver.findElement(By.css('.dropdown-menu.dropdown-menu-right')).findElement(By.linkText('Login')).click();
                 await driver.findElement(By.id('input-email')).sendKeys(email);
                 await driver.findElement(By.id('input-password')).sendKeys(password);
                 await driver.findElement(By.css('input[type="submit"]')).click();
 
-                //assert.equal("http://vsrvfeia0h-114.vsb.cz/opencart/index.php?route=account/account", url);
-                await driver.quit();
+                try {
+                    // element is displayed - login success
+                    let accountProfileDisplayed = await driver.findElement(By.id('account-account')).isDisplayed();
+                    assert.equal(true, accountProfileDisplayed);
+                } catch (err) {
+                    // login fail
+                    let selector = '.alert.alert-danger.alert-dismissible';
+                    let errorMessageDisplayed = await driver.findElement(By.css(selector)).isDisplayed();
+                    assert.equal(true, errorMessageDisplayed);
+                }
             }  catch (err) {
                 handleFailure(err, driver)
             }
         })
     })
 
-    /*beforeEach(async function() {
+    beforeEach(async function() {
         driver = await new Builder().forBrowser("chrome").build();
         //To wait for browser to build and launch properly
         await driver.get("http://vsrvfeia0h-114.vsb.cz/opencart/");
@@ -79,8 +85,8 @@ describe('Login tests', function() {
 
     afterEach(async function() {
         await driver.quit();
-    });*/
-})
+    });
+})*/
 
 
 function handleFailure(err, driver) {
