@@ -2,7 +2,7 @@ const {By,Key,Builder} = require("selenium-webdriver");
 var assert = require('assert');
 require("chromedriver");
 
-/*describe('Buy notebook tests', function() {
+describe('Buy notebook tests', function() {
     const tests = [
         {count: '1', expected: "1 item(s) - $1,202.00"},
         {count: '0', expected: "0 item(s) - $0.00"},
@@ -87,17 +87,18 @@ describe('Login tests', function() {
         await driver.quit();
     });
 })
-*/
+
 describe('Register tests', function() {
     const tests = [
         //{name: 'test', lastname: 'test', email: 'test2022_2@test.test', password: "test123", password_confirm: 'test123', phone: '123456789', privacy: true},
-        {name: 'test', lastname: 'test', email: 'test2022_2@test.test', password: 'test123', password_confirm: 'test123', phone: '123456789', privacy: false},
-        {name: '', lastname: 'test', email: 'test2022_2@test.test', password: 'test123', password_confirm: 'test123', phone: '123456789', privacy: true},
-        {name: '', lastname: '', email: 'test2022_2@test.test', password: 'test123', password_confirm: 'test123', phone: '123456789', privacy: true},
+        {name: 'test', lastname: 'test', email: 'test2022_3@test.test', password: 'test123', password_confirm: 'test123', phone: '123456789', privacy: false},
+        {name: '', lastname: 'test', email: 'test2022_3@test.test', password: 'test123', password_confirm: 'test123', phone: '123456789', privacy: true},
+        {name: '', lastname: '', email: 'test2022_3@test.test', password: 'test123', password_confirm: 'test123', phone: '123456789', privacy: true},
         {name: '', lastname: '', email: '', password: 'test123', password_confirm: 'test123', phone: '123456789', privacy: true},
         {name: '', lastname: '', email: '', password: '', password_confirm: 'test123', phone: '123456789', privacy: true},
         {name: '', lastname: '', email: '', password: '', password_confirm: 'test123', phone: '', privacy: true},
-        //{email: 'notexistingemail@test.test', password: "wrongpassword"}
+        {name: 'test', lastname: 'test', email: 'test@test.test', password: "test123", password_confirm: 'test1234', phone: '123456789', privacy: true},
+        {name: '', lastname: '', email: '', password: '', password_confirm: 'test123', phone: '12', privacy: true},
     ];
 
     tests.forEach(({name, lastname, email, password, password_confirm, phone, privacy}) => {
@@ -152,6 +153,15 @@ describe('Register tests', function() {
                     if (!privacy) {
                         let privacyErrorDisplayed = await driver.findElement(By.css('.alert.alert-danger.alert-dismissible')).isDisplayed();
                         assert.equal(true, privacyErrorDisplayed);
+                    } else if (email == 'test@test.test') {
+                        // test special for same email as already exists
+                        let emailErrorDisplayed = await driver.findElement(By.css('.alert.alert-danger.alert-dismissible')).isDisplayed();
+                        assert.equal(true, emailErrorDisplayed);
+                    }
+
+                    if (password != password_confirm || (password_confirm == '' && password != '')) {
+                        let passwordConfirmErrorDisplayed = await driver.findElement(By.xpath("//*[text()='Password confirmation does not match password!']")).isDisplayed();
+                        assert.equal(true, passwordConfirmErrorDisplayed);
                     }
                 }
             }  catch (err) {
