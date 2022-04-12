@@ -4,11 +4,15 @@ require("chromedriver");
 
 describe('Buy notebook tests', function() {
     const tests = [
+        // correct values 
         {count: '1', expected: "1 item(s) - $1,202.00"},
         {count: '0', expected: "0 item(s) - $0.00"},
+        // incorrect values
         {count: '-1', expected: "0 item(s) - $0.00"},
         {count: '-99', expected: "0 item(s) - $0.00"},
+        // correct value
         {count: '2147483647', expected: "2147483647 item(s) - $2,581,275,343,694.00"},
+        // incorrect value (boundary - will add 2147483647)
         {count: '2147483648', expected: "2147483647 item(s) - $2,581,275,343,694.00"},
     ];
 
@@ -91,12 +95,27 @@ describe('Login tests', function() {
 describe('Register tests', function() {
     const tests = [
         //{name: 'test', lastname: 'test', email: 'test2022_2@test.test', password: "test123", password_confirm: 'test123', phone: '123456789', privacy: true},
+        // privacy not checked
         {name: 'test', lastname: 'test', email: 'test2022_3@test.test', password: 'test123', password_confirm: 'test123', phone: '123456789', privacy: false},
+        // shot first name
         {name: '', lastname: 'test', email: 'test2022_3@test.test', password: 'test123', password_confirm: 'test123', phone: '123456789', privacy: true},
+        // long first name
+        {name: 'abcdefghijklmnopqrstuvwxyzabcdeff', lastname: 'test', email: 'test2022_3@test.test', password: 'test123', password_confirm: 'test123', phone: '123456789', privacy: true},
+        // long last name
+        {name: '', lastname: 'abcdefghijklmnopqrstuvwxyzabcdeff', email: 'test2022_3@test.test', password: 'test123', password_confirm: 'test123', phone: '123456789', privacy: true},
+        // short last name
         {name: '', lastname: '', email: 'test2022_3@test.test', password: 'test123', password_confirm: 'test123', phone: '123456789', privacy: true},
+        // wrong email
         {name: '', lastname: '', email: '', password: 'test123', password_confirm: 'test123', phone: '123456789', privacy: true},
+        // short password
         {name: '', lastname: '', email: '', password: '', password_confirm: 'test123', phone: '123456789', privacy: true},
+        // long password
+        {name: '', lastname: '', email: '', password: 'abcdefghijklmnopqrstuv', password_confirm: 'test123', phone: '123456789', privacy: true},
+        // short phone
         {name: '', lastname: '', email: '', password: '', password_confirm: 'test123', phone: '', privacy: true},
+        // long phone
+        {name: '', lastname: '', email: '', password: '', password_confirm: 'test123', phone: 'abcdefghijklmnopqrstuvwxyzabcdeff', privacy: true},
+        // not matching password
         {name: 'test', lastname: 'test', email: 'test@test.test', password: "test123", password_confirm: 'test1234', phone: '123456789', privacy: true},
         {name: '', lastname: '', email: '', password: '', password_confirm: 'test123', phone: '12', privacy: true},
     ];
@@ -150,13 +169,9 @@ describe('Register tests', function() {
                         assert.equal(true, passwordErrorDisplayed);
                     }
 
-                    if (!privacy) {
+                    if (!privacy || email == 'test@test.test') {
                         let privacyErrorDisplayed = await driver.findElement(By.css('.alert.alert-danger.alert-dismissible')).isDisplayed();
                         assert.equal(true, privacyErrorDisplayed);
-                    } else if (email == 'test@test.test') {
-                        // test special for same email as already exists
-                        let emailErrorDisplayed = await driver.findElement(By.css('.alert.alert-danger.alert-dismissible')).isDisplayed();
-                        assert.equal(true, emailErrorDisplayed);
                     }
 
                     if (password != password_confirm || (password_confirm == '' && password != '')) {
