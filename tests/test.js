@@ -4,7 +4,7 @@ require("chromedriver");
 
 describe('Buy notebook tests', function() {
     const tests = [
-        // correct values 
+        // correct values
         {count: '1', expected: "1 item(s) - $1,202.00"},
         {count: '0', expected: "0 item(s) - $0.00"},
         // incorrect values
@@ -110,7 +110,7 @@ describe('Register tests', function() {
         // short password
         {name: '', lastname: '', email: '', password: '', password_confirm: 'test123', phone: '123456789', privacy: true},
         // long password
-        {name: '', lastname: '', email: '', password: 'abcdefghijklmnopqrstuv', password_confirm: 'test123', phone: '123456789', privacy: true},
+        {name: '', lastname: '', email: '', password: 'abcdefghijklmnopqrstuv', password_confirm: '', phone: '', privacy: true},
         // short phone
         {name: '', lastname: '', email: '', password: '', password_confirm: 'test123', phone: '', privacy: true},
         // long phone
@@ -164,11 +164,6 @@ describe('Register tests', function() {
                         assert.equal(true, phoneErrorDisplayed);
                     }
 
-                    if (password == '' || password.length < 4 || password.length > 20) {
-                        let passwordErrorDisplayed = await driver.findElement(By.xpath("//*[text()='Password must be between 4 and 20 characters!']")).isDisplayed();
-                        assert.equal(true, passwordErrorDisplayed);
-                    }
-
                     if (!privacy || email == 'test@test.test') {
                         let privacyErrorDisplayed = await driver.findElement(By.css('.alert.alert-danger.alert-dismissible')).isDisplayed();
                         assert.equal(true, privacyErrorDisplayed);
@@ -177,6 +172,9 @@ describe('Register tests', function() {
                     if (password != password_confirm || (password_confirm == '' && password != '')) {
                         let passwordConfirmErrorDisplayed = await driver.findElement(By.xpath("//*[text()='Password confirmation does not match password!']")).isDisplayed();
                         assert.equal(true, passwordConfirmErrorDisplayed);
+                    } else if (password == '' || password.length < 4 || password.length > 20) {
+                        let passwordErrorDisplayed = await driver.findElement(By.xpath("//*[text()='Password must be between 4 and 20 characters!']")).isDisplayed();
+                        assert.equal(true, passwordErrorDisplayed);
                     }
                 }
             }  catch (err) {
