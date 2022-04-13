@@ -50,10 +50,16 @@ describe('Buy notebook tests', function() {
 
 describe('Login tests', function() {
     const tests = [
+        // correct
         {email: 'test2022@test.test', password: "test123"},
+        // not correct
+        {email: ' test2022@test.test', password: "test123"},
+        // correct email, wrong pass
         {email: 'test2023@test.test', password: "wrongpassword"},
+        // wrong email
         {email: 'notexistingemail@test.test', password: "test1234"},
-        {email: 'notexistingemail@test.test', password: "wrongpassword"}
+        // wrong email, wrong pass
+        {email: 'notexistingemail@test.test', password: "wrongpassword"},
     ];
 
     tests.forEach(({email, password}) => {
@@ -94,7 +100,8 @@ describe('Login tests', function() {
 
 describe('Register tests', function() {
     const tests = [
-        //{name: 'test', lastname: 'test', email: 'test2022_2@test.test', password: "test123", password_confirm: 'test123', phone: '123456789', privacy: true},
+        // all correct
+        {name: 'test', lastname: 'test', email: 'test2022_2@test.test', password: "test123", password_confirm: 'test123', phone: '123456789', privacy: true},
         // privacy not checked
         {name: 'test', lastname: 'test', email: 'test2022_3@test.test', password: 'test123', password_confirm: 'test123', phone: '123456789', privacy: false},
         // shot first name
